@@ -77,6 +77,13 @@ userSchema.methods.toJSON = function () {
   return rest;
 };
 
+userSchema.virtual('tasks', {
+  ref: 'Task',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
+
 // has the plain text password before saving
 userSchema.pre('save', async function (next) {
   const user = this;
