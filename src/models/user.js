@@ -71,6 +71,12 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const {password, tokens, ...rest} = user.toObject();
+  return rest;
+};
+
 // has the plain text password before saving
 userSchema.pre('save', async function (next) {
   const user = this;
