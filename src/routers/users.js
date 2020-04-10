@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/user');
+const multer = require('multer');
 
 router.patch('/users/me', auth, async (req, res) => {
   const updates = Object.keys(req.body);
@@ -44,6 +45,30 @@ router.post('/users', async (req, res) => {
 router.get('/users/me', auth, async (req, res ) => {
   res.send(req.user);
 });
+
+const upload = multer({
+  dest: 'avatars',
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/gm)) {
+      return cb(new Error('Only images allowed (jpg, jpeg, png)!'))
+    }
+    cb(null, true);
+  }
+});
+
+router.post('/users/me/avatar', [auth, upload.single('avatar')], async (req, res) => {
+  try {
+    res.send();
+  } catch(e) {
+    res.status(500).send(e);
+  }
+}, (err, req, res, next) => {
+    res.status(400).send({error: err.message})
+});
+
 
 router.post('/users/logout', auth, async (req, res) => {
   try {
