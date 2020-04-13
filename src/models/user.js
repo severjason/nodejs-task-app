@@ -47,7 +47,10 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true,
     }
-  }]
+  }],
+  avatar: {
+    type: Buffer,
+  }
 }, {
   timestamps: true
 });
@@ -76,7 +79,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.methods.toJSON = function () {
   const user = this;
-  const {password, tokens, ...rest} = user.toObject();
+  const {password, tokens, avatar, ...rest} = user.toObject();
   return rest;
 };
 
